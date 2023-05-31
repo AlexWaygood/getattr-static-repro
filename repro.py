@@ -4,20 +4,6 @@ import inspect
 import wrapt
 
 class Trackable:
-  def _maybe_initialize_trackable(self):
-    if hasattr(self, "_self_unconditional_checkpoint_dependencies"):
-       return
-    self._self_unconditional_checkpoint_dependencies = []
-    self._self_unconditional_dependency_names = {}
-    self._self_unconditional_deferred_dependencies = {}
-    if hasattr(self, "_self_update_uid"):
-      raise AssertionError(
-          "Internal error: the object had an update UID set before its "
-          "initialization code was run.")
-    self._self_update_uid = -1
-    self._self_name_based_restores = set()
-    self._self_saveable_object_factories = {}
-
   def _name_based_attribute_restore(self, checkpoint):
     self._self_name_based_restores.add(checkpoint)
     if self._self_update_uid < checkpoint.restore_uid:
