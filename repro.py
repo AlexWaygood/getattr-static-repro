@@ -13,30 +13,6 @@ class TrackableDataStructure:
     self._self_extra_variables = []
 
   @property
-  def weights(self):
-    return self.trainable_weights + self.non_trainable_weights
-
-  @property
-  def trainable_variables(self):
-    return self.trainable_weights
-
-  @property
-  def non_trainable_variables(self):
-    return self.non_trainable_weights
-
-  @property
-  def variables(self):
-    return self.weights
-
-  @property
-  def updates(self):
-    aggregated = []
-    for layer in self.layers:
-      if hasattr(layer, "updates"):
-        aggregated += layer.updates
-    return aggregated
-
-  @property
   def losses(self):
     aggregated = []
     for layer in self.layers:
