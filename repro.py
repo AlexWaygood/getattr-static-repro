@@ -70,14 +70,5 @@ class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
     del self.__wrapped__[key]
     self._update_snapshot()
 
-  def __eq__(self, other):
-    # Override the TrackableDataStructure "== -> is" forwarding and go back to
-    # the wrapt implementation.
-    return self.__wrapped__ == other
-
-  def update(self, *args, **kwargs):
-    for key, value in dict(*args, **kwargs).items():
-      self[key] = value
-
 
 inspect.getattr_static(_DictWrapper(), 'bar')
