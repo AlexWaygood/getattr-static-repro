@@ -48,13 +48,6 @@ class Trackable:
     self._self_name_based_restores = set()
     self._self_saveable_object_factories = {}
 
-  @property
-  def _object_identifier(self):
-    return "_generic_user_object"
-
-  def _no_dependency(self, value):
-    return value
-
   def _name_based_attribute_restore(self, checkpoint):
     self._self_name_based_restores.add(checkpoint)
     if self._self_update_uid < checkpoint.restore_uid:
@@ -164,15 +157,6 @@ class Trackable:
         key=lambda checkpoint: checkpoint.restore_uid,
         reverse=True):
       trackable._name_based_attribute_restore(name_based_restore)  # pylint: disable=protected-access
-
-  def _gather_saveables_for_checkpoint(self):
-    return getattr(self, "_self_saveable_object_factories", {})
-
-  def _serialize_to_tensors(self):
-    raise NotImplementedError
-
-  def _restore_from_tensors(self, restored_tensors):
-    raise NotImplementedError
 
   def _serialize_to_proto(self, object_proto=None, **kwargs):
     del object_proto, kwargs
