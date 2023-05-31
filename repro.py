@@ -4,24 +4,6 @@ import inspect
 import wrapt
 
 class Trackable:
-  def _preload_simple_restoration(self, name):
-    deferred_dependencies_list = self._deferred_dependencies.get(name, ())
-    if not deferred_dependencies_list:
-      # Nothing to do; we don't have a restore for this dependency queued up.
-      return
-    for checkpoint_position in deferred_dependencies_list:
-      if not checkpoint_position.is_simple_variable():
-        # If _any_ pending restoration is too complicated to fit in an
-        # initializer (because it has dependencies, or because there are
-        # multiple Tensors to restore), bail and let the general tracking code
-        # handle it.
-        return None
-    checkpoint_position = max(
-        deferred_dependencies_list,
-        key=lambda restore: restore.checkpoint.restore_uid)
-    return CheckpointInitialValueCallable(
-        checkpoint_position=checkpoint_position)
-
   def _track_trackable(self, trackable, name, overwrite=False):
     self._maybe_initialize_trackable()
     if not isinstance(trackable, Trackable):
