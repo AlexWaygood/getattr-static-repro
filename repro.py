@@ -12,14 +12,6 @@ class TrackableDataStructure:
     self._self_trainable = True
     self._self_extra_variables = []
 
-  @property
-  def losses(self):
-    aggregated = []
-    for layer in self.layers:
-      if hasattr(layer, "losses"):
-        aggregated += layer.losses
-    return aggregated
-
   def __hash__(self):
     # Support object-identity hashing, so these structures can be used as keys
     # in sets/dicts.
