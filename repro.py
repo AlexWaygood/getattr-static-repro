@@ -4,36 +4,6 @@ import inspect
 import wrapt
 
 class Trackable:
-  def _add_variable_with_custom_getter(self,
-                                       name,
-                                       shape=None,
-                                       dtype=...,
-                                       initializer=None,
-                                       getter=None,
-                                       overwrite=False,
-                                       **kwargs_for_getter):
-    self._maybe_initialize_trackable()
-    with ops.init_scope():
-      if context.executing_eagerly():
-        checkpoint_initializer = self._preload_simple_restoration(name=name)
-      else:
-        checkpoint_initializer = None
-      if (checkpoint_initializer is not None and
-          not (isinstance(initializer, CheckpointInitialValueCallable) and
-               (initializer.restore_uid > checkpoint_initializer.restore_uid))):
-        initializer = checkpoint_initializer
-    new_variable = getter(
-        name=name,
-        shape=shape,
-        dtype=dtype,
-        initializer=initializer,
-        **kwargs_for_getter)
-
-    if not overwrite or isinstance(new_variable, Trackable):
-      return self._track_trackable(new_variable, name=name, overwrite=overwrite)
-    else:
-      return new_variable
-
   def _preload_simple_restoration(self, name):
     deferred_dependencies_list = self._deferred_dependencies.get(name, ())
     if not deferred_dependencies_list:
