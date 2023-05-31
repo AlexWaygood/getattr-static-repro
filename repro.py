@@ -29,7 +29,6 @@ class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
         {key: self._track_value(
             value, name=self._name_element(key))
          for key, value in self.__wrapped__.items()})
-    self._update_snapshot()
 
   def __getattribute__(self, name):
     if (hasattr(type(self), name)
@@ -87,41 +86,6 @@ class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
     """Check if there has already been a mutation which prevents saving."""
     return (self._self_external_modification
             or self._self_non_string_key)
-
-  def _check_self_external_modification(self):
-    """Checks for any changes to the wrapped dict not through the wrapper."""
-    if self._dirty:
-      return
-    if self != self._self_last_wrapped_dict_snapshot:
-      self._self_external_modification = True
-      self._self_last_wrapped_dict_snapshot = None
-
-  def _update_snapshot(self):
-    """Acknowledges tracked changes to the wrapped dict."""
-    if self._dirty:
-      return
-    self._self_last_wrapped_dict_snapshot = dict(self)
-
-  def _track_value(self, value, name):
-    """Allows storage of non-trackable objects."""
-    if isinstance(name, str):
-      string_key = True
-    else:
-      name = "-non_string_key"
-      string_key = False
-    try:
-      no_dependency = isinstance(value, NoDependency)
-      value = super()._track_value(value=value, name=name)
-      if not (string_key or no_dependency):
-        # A non-string key maps to a trackable value. This data structure
-        # is not saveable.
-        self._self_non_string_key = True
-      return value
-    except ValueError:
-      # Even if this value isn't trackable, we need to make sure
-      # NoDependency objects get unwrapped.
-      return sticky_attribute_assignment(
-          trackable=self, value=value, name=name)
 
   def __setitem__(self, key, value):
     """Allow any modifications, but possibly mark the wrapper as unsaveable."""
