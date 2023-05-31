@@ -369,10 +369,6 @@ class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
          for key, value in self.__wrapped__.items()})
     self._update_snapshot()
 
-  def __reduce_ex__(self, protocol):
-    return (self.__class__,
-            (self.__wrapped__,))
-
   def __getattribute__(self, name):
     if (hasattr(type(self), name)
         and isinstance(getattr(type(self), name), property)):
@@ -383,23 +379,6 @@ class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
       return object.__getattribute__(self, name)
     else:
       return super().__getattribute__(name)
-
-  def copy(self):
-    return copy.copy(self)
-
-  # pylint: disable=protected-access
-  def __copy__(self):
-    copied = _DictWrapper(copy.copy(self.__wrapped__))
-    copied._self_external_modification = self._self_external_modification
-    copied._self_non_string_key = self._self_non_string_key
-    return copied
-
-  def __deepcopy__(self, memo):
-    copied = _DictWrapper(copy.deepcopy(self.__wrapped__, memo))
-    copied._self_external_modification = self._self_external_modification
-    copied._self_non_string_key = self._self_non_string_key
-    return copied
-  # pylint: enable=protected-access
 
   @property
   def _values(self):
@@ -482,9 +461,6 @@ class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
       return sticky_attribute_assignment(
           trackable=self, value=value, name=name)
 
-  def _name_element(self, key):
-    return key
-
   def __setitem__(self, key, value):
     """Allow any modifications, but possibly mark the wrapper as unsaveable."""
     self._check_self_external_modification()
@@ -507,12 +483,6 @@ class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
     self._check_self_external_modification()
     del self.__wrapped__[key]
     self._update_snapshot()
-
-  def __repr__(self):
-    return "DictWrapper(%s)" % (repr(self.__wrapped__),)
-
-  def __hash__(self):
-    raise TypeError("unhashable type: 'DictWrapper'")
 
   def __eq__(self, other):
     # Override the TrackableDataStructure "== -> is" forwarding and go back to
