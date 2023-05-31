@@ -4,22 +4,6 @@ import inspect
 import wrapt
 
 class Trackable:
-  def _handle_deferred_dependencies(self, name, trackable):
-    self._maybe_initialize_trackable()
-    trackable._maybe_initialize_trackable()  # pylint: disable=protected-access
-    deferred_dependencies_list = self._deferred_dependencies.pop(name, ())
-    for checkpoint_position in sorted(
-        deferred_dependencies_list,
-        key=lambda restore: restore.checkpoint.restore_uid,
-        reverse=True):
-      checkpoint_position.restore(trackable)
-
-    for name_based_restore in sorted(
-        self._self_name_based_restores,
-        key=lambda checkpoint: checkpoint.restore_uid,
-        reverse=True):
-      trackable._name_based_attribute_restore(name_based_restore)  # pylint: disable=protected-access
-
   def _serialize_to_proto(self, object_proto=None, **kwargs):
     del object_proto, kwargs
     return None
