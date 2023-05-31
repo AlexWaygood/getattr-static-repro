@@ -22,13 +22,6 @@ class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
       # Allow construction from a sequence, e.g. from nest.pack_sequence_as.
       wrapped_dict = dict(wrapped_dict)
     wrapt.ObjectProxy.__init__(self, wrapped_dict)
-    TrackableDataStructure.__init__(self)
-    self._self_non_string_key = False
-    self._self_external_modification = False
-    self.__wrapped__.update(
-        {key: self._track_value(
-            value, name=self._name_element(key))
-         for key, value in self.__wrapped__.items()})
 
   def __getattribute__(self, name):
     if (hasattr(type(self), name)
