@@ -4,12 +4,6 @@ import inspect
 import wrapt
 
 class Trackable:
-  def _name_based_attribute_restore(self, checkpoint):
-    self._self_name_based_restores.add(checkpoint)
-    if self._self_update_uid < checkpoint.restore_uid:
-      checkpoint.eager_restore(self)
-      self._self_update_uid = checkpoint.restore_uid
-
   def _add_variable_with_custom_getter(self,
                                        name,
                                        shape=None,
