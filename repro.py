@@ -13,55 +13,6 @@ class TrackableDataStructure:
     self._self_extra_variables = []
 
   @property
-  def layers(self):
-    return list(layer_utils.filter_empty_layer_containers(self._layers))
-
-  @property
-  def trainable_weights(self):
-    if not self._self_trainable:
-      return []
-    trainable_variables = []
-    for obj in self._values:
-      if isinstance(obj, base.Trackable) and hasattr(
-          obj, "trainable_variables"):
-        trainable_variables += obj.trainable_variables
-    trainable_extra_variables = [
-        v for v in self._self_extra_variables if v.trainable
-    ]
-    return trainable_variables + trainable_extra_variables
-
-  @property
-  def non_trainable_weights(self):
-    trainable_extra_variables = [
-        v for v in self._self_extra_variables if v.trainable
-    ]
-    non_trainable_extra_variables = [
-        v for v in self._self_extra_variables if not v.trainable
-    ]
-    non_trainable_variables = []
-    for obj in self._values:
-      if isinstance(obj, base.Trackable) and hasattr(
-          obj, "non_trainable_variables"):
-        non_trainable_variables += obj.non_trainable_variables
-
-    if not self._self_trainable:
-      # Return order is all trainable vars, then all non-trainable vars.
-      trainable_variables = []
-      for obj in self._values:
-        if isinstance(obj, base.Trackable) and hasattr(
-            obj, "trainable_variables"):
-          trainable_variables += obj.trainable_variables
-
-      non_trainable_variables = (
-          trainable_variables + trainable_extra_variables +
-          non_trainable_variables + non_trainable_extra_variables)
-    else:
-      non_trainable_variables = (
-          non_trainable_variables + non_trainable_extra_variables)
-
-    return non_trainable_variables
-
-  @property
   def weights(self):
     return self.trainable_weights + self.non_trainable_weights
 
