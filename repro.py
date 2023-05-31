@@ -1,11 +1,5 @@
-import collections.abc as collections_abc
-import inspect
+import inspect, wrapt
 
-import wrapt
-
-class TrackableDataStructure: pass
-
-class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy): ...
-
-
-inspect.getattr_static(_DictWrapper({}), 'bar')
+class Foo: pass
+class Bar(Foo, wrapt.ObjectProxy): pass
+inspect.getattr_static(Bar({}), 'bar')
