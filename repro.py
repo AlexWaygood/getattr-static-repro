@@ -24,17 +24,6 @@ class Trackable:
       checkpoint.eager_restore(self)
       self._self_update_uid = checkpoint.restore_uid
 
-  @property
-  def _checkpoint_dependencies(self):
-    return self._self_unconditional_checkpoint_dependencies
-
-  @property
-  def _deferred_dependencies(self):
-    return self._self_unconditional_deferred_dependencies
-
-  def _lookup_dependency(self, name):
-    return self._self_unconditional_dependency_names.get(name, None)
-
   def _add_variable_with_custom_getter(self,
                                        name,
                                        shape=None,
