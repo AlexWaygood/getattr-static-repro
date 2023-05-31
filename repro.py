@@ -1,4 +1,5 @@
-import inspect, wrapt
+import inspect
+import wrapt
 
 class Foo: pass
 class Bar(Foo, wrapt.ObjectProxy): pass
