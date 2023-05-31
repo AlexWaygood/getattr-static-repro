@@ -12,18 +12,6 @@ class TrackableDataStructure:
     self._self_trainable = True
     self._self_extra_variables = []
 
-  @property
-  def _attribute_sentinel(self):
-    return self._self_attribute_sentinel
-
-  @property
-  def trainable(self):
-    return self._self_trainable
-
-  @trainable.setter
-  def trainable(self, value):
-    self._self_trainable = value
-
   def _track_value(self, value, name):
     value = sticky_attribute_assignment(
         trackable=self, value=value, name=name)
