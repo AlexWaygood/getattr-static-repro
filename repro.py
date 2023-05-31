@@ -3,49 +3,7 @@ import inspect
 
 import wrapt
 
-class Trackable:
-  def _serialize_to_proto(self, object_proto=None, **kwargs):
-    del object_proto, kwargs
-    return None
-
-  @classmethod
-  def _deserialize_from_proto(cls,
-                              proto=None,
-                              dependencies=None,
-                              object_proto=None,
-                              export_dir=None,
-                              asset_file_def=None,
-                              operation_attributes=None,
-                              **kwargs):
-    del (proto, dependencies, object_proto, export_dir, asset_file_def,
-         operation_attributes, kwargs)
-    return cls()
-
-  def _add_trackable_child(self, name, value):
-    self._track_trackable(value, name, overwrite=True)
-
-  def _deserialization_dependencies(self, children):
-    del children  # Unused.
-    return {}
-
-  def _trackable_children(self,
-                          save_type=...,
-                          cache=None,
-                          **kwargs):
-    del save_type, cache, kwargs
-    self._maybe_initialize_trackable()
-    return {name: ref for name, ref in self._checkpoint_dependencies}
-
-  def _export_to_saved_model_graph(self,
-                                   object_map,
-                                   tensor_map,
-                                   options,
-                                   **kwargs):
-    _, _, _ = object_map, tensor_map, options
-    del kwargs
-    return []
-
-class TrackableDataStructure(Trackable):
+class TrackableDataStructure:
   def __init__(self):
     # Attributes prefixed with "_self_" for compatibility with
     # wrapt.ObjectProxy. All additional attrs MUST conform to this pattern, as
