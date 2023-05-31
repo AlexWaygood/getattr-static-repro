@@ -4,35 +4,6 @@ import inspect
 import wrapt
 
 class Trackable:
-  def _track_trackable(self, trackable, name, overwrite=False):
-    self._maybe_initialize_trackable()
-    if not isinstance(trackable, Trackable):
-      raise TypeError(
-          "Trackable._track_trackable() can only be used to track objects of "
-          f"type Trackable. Got type {type(trackable)}.")
-    if not getattr(self, "_manual_tracking", True):
-      return trackable
-    new_reference = TrackableReference(name=name, ref=trackable)
-    current_object = self._lookup_dependency(name)
-    if (current_object is not None and current_object is not trackable):
-      if not overwrite:
-        raise ValueError(
-            f"Called Trackable._track_trackable() with name='{name}', "
-            "but a Trackable with this name is already declared as a "
-            "dependency. Names must be unique (or overwrite=True).")
-      # This is a weird thing to do, but we're not going to stop people from
-      # using __setattr__.
-      for index, (old_name, _) in enumerate(
-          self._self_unconditional_checkpoint_dependencies):
-        if name == old_name:
-          self._self_unconditional_checkpoint_dependencies[
-              index] = new_reference
-    elif current_object is None:
-      self._self_unconditional_checkpoint_dependencies.append(new_reference)
-      self._handle_deferred_dependencies(name=name, trackable=trackable)
-    self._self_unconditional_dependency_names[name] = trackable
-    return trackable
-
   def _handle_deferred_dependencies(self, name, trackable):
     self._maybe_initialize_trackable()
     trackable._maybe_initialize_trackable()  # pylint: disable=protected-access
