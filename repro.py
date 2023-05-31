@@ -5,9 +5,7 @@ import wrapt
 
 class TrackableDataStructure: pass
 
-class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
-  def __init__(self):
-    wrapt.ObjectProxy.__init__(self, {})
+class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy): ...
 
 
-inspect.getattr_static(_DictWrapper(), 'bar')
+inspect.getattr_static(_DictWrapper({}), 'bar')
