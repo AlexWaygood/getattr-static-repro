@@ -4,36 +4,6 @@ import inspect
 import wrapt
 
 class Trackable:
-  @property
-  def _setattr_tracking(self):
-    if not hasattr(self, "_self_setattr_tracking"):
-      self._self_setattr_tracking = True
-    return self._self_setattr_tracking
-
-  @_setattr_tracking.setter
-  def _setattr_tracking(self, value):
-    self._self_setattr_tracking = value
-
-  @property
-  def _update_uid(self):
-    return self._self_update_uid
-
-  @_update_uid.setter
-  def _update_uid(self, value):
-    self._self_update_uid = value
-
-  @property
-  def _unconditional_checkpoint_dependencies(self):
-    return self._self_unconditional_checkpoint_dependencies
-
-  @property
-  def _unconditional_dependency_names(self):
-    return self._self_unconditional_dependency_names
-
-  @property
-  def _name_based_restores(self):
-    return self._self_name_based_restores
-
   def _maybe_initialize_trackable(self):
     if hasattr(self, "_self_unconditional_checkpoint_dependencies"):
        return
