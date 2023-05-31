@@ -12,16 +12,6 @@ class TrackableDataStructure:
     self._self_trainable = True
     self._self_extra_variables = []
 
-  def __hash__(self):
-    # Support object-identity hashing, so these structures can be used as keys
-    # in sets/dicts.
-    return id(self)
-
-  def __eq__(self, other):
-    # Similar to Tensors, trackable data structures use object-identity
-    # equality to support set/dict membership.
-    return self is other
-
 class _DictWrapper(TrackableDataStructure, wrapt.ObjectProxy):
   """Wraps built-in dicts to support restore-on-create for variables.
 
