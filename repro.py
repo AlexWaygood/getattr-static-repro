@@ -13,24 +13,6 @@ class TrackableDataStructure:
     self._self_extra_variables = []
 
   @property
-  def _values(self):
-    """An iterable/sequence which may contain trackable objects."""
-    raise NotImplementedError("Abstract method")
-
-  @property
-  def _layers(self):
-    """All Layers and Layer containers, including empty containers."""
-    # Filter objects on demand so that wrapper objects use values from the thing
-    # they're wrapping if out of sync.
-    collected = []
-    for obj in self._values:
-      if (isinstance(obj, TrackableDataStructure)
-          or layer_utils.is_layer(obj)
-          or layer_utils.has_weights(obj)):
-        collected.append(obj)
-    return collected
-
-  @property
   def layers(self):
     return list(layer_utils.filter_empty_layer_containers(self._layers))
 
